@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTA San Andreas - Central de Informações</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: #f39c12;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Barra de Pesquisa */
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 12px 20px;
+      border: 2px solid #333;
+      border-radius: 25px;
+      background-color: #1e1e1e;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .search-container input:focus {
+      border-color: #f39c12;
+    }
+
+    /* Botões de Filtro */
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background-color: #1e1e1e;
+      color: #fff;
+      border: 2px solid #333;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover, .btn.active {
+      background-color: #f39c12;
+      color: #121212;
+      border-color: #f39c12;
+    }
+
+    /* Grid de Conteúdo */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #333;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(243, 156, 18, 0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .card img:hover {
+      opacity: 0.85;
+    }
+
+    .card-content {
+      padding: 15px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tag {
+      align-self: flex-start;
+      background-color: #f39c12;
+      color: #121212;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: #aaa;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Modal de Imagem */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>GTA San Andreas Hub</h1>
+    <p>Dicas, Teorias e Conteúdos do jogo</p>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Pesquisar por títulos, dicas ou teorias...">
+  </div>
+
+  <div class="filter-buttons">
+    <button class="btn active" onclick="filterCategory('all')">Todos</button>
+    <button class="btn" onclick="filterCategory('dica')">Dicas</button>
+    <button class="btn" onclick="filterCategory('teoria')">Teorias</button>
+    <button class="btn" onclick="filterCategory('video')">Vídeos</button>
+  </div>
+
+  <main class="grid" id="cardsGrid">
+
+    <!-- Card Dica 1 -->
+    <div class="card" data-category="dica">
+      <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500" alt="Respeito e Status" onclick="openModal(this.src)">
+      <div class="card-content">
+        <span class="tag">Dica</span>
+        <h3>Aumentar Respeito Rapido</h3>
+        <p>Conquiste territórios de gangues rivais e complete missões principais para aumentar o respeito de CJ rapidamente e recrutar mais membros para a Grove Street.</p>
+      </div>
+    </div>
+
+    <!-- Card Teoria 1 -->
+    <div class="card" data-category="teoria">
+      <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Misterio de Lil Probe Inn" onclick="openModal(this.src)">
+      <div class="card-content">
+        <span class="tag">Teoria</span>
+        <h3>O Mistério do Lil' Probe'Inn</h3>
+        <p>O bar temático de OVNIs no deserto esconde fotos de supostos avistamentos e um mapa misterioso com pontos marcados pelo estado de San Andreas.</p>
+      </div>
+    </div>
+
+    <!-- Card Vídeo 1 -->
+    <div class="card" data-category="video">
+      <div class="card-content">
+        <span class="tag">Vídeo</span>
+        <h3>Gameplay & Nostalgia</h3>
+        <p>Assista a momentos clássicos da jogabilidade e exploração pelo mapa.</p>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/W43R84Yv8gE" title="GTA SA Video" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Dica 2 -->
+    <div class="card" data-category="dica">
+      <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500" alt="Habilidade de Pilotagem" onclick="openModal(this.src)">
+      <div class="card-content">
+        <span class="tag">Dica</span>
+        <h3>Escola de Pilotagem</h3>
+        <p>Concluir todas as aulas da escola de pilotagem em Las Venturas garante veículos especiais no aeroporto e melhora a pilotagem do CJ.</p>
+      </div>
+    </div>
+
+    <!-- Card Teoria 2 -->
+    <div class="card" data-category="teoria">
+      <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500" alt="Lenda do Pe Grande" onclick="openModal(this.src)">
+      <div class="card-content">
+        <span class="tag">Teoria</span>
+        <h3>A Lenda do Pé Grande</h3>
+        <p>Uma das teorias mais famosas da era do PS2 dizia que a criatura habitava a floresta de Back-o'-Beyond, gerando buscas intensas da comunidade.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal para Visualizar Imagens -->
+  <div class="modal" id="imageModal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img id="modalImg" src="" alt="Imagem Ampliada">
+  </div>
+
+  <script>
+    // Função de Pesquisa em Tempo Real
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card');
+
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase();
+
+      cards.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+
+        if (title.includes(query) || description.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // Função para Filtrar por Categoria
+    function filterCategory(category) {
+      const buttons = document.querySelectorAll('.filter-buttons .btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Funções do Modal de Imagem
+    function openModal(src) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
